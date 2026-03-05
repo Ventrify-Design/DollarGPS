@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FAQ — DollarGPS</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { background: #050B18; color: #fff; font-family: 'Plus Jakarta Sans', sans-serif; overflow-x: hidden; }
+    body::before { content: ''; position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: 0.025; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E"); background-repeat: repeat; background-size: 128px 128px; }
+    .glow-blue { position: absolute; border-radius: 50%; background: radial-gradient(circle, rgba(0,121,193,0.22) 0%, transparent 70%); pointer-events: none; }
+    .text-gradient-blue { background: linear-gradient(135deg, #1A9FE0 0%, #0079C1 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    /* Nav link */
+    .nav-link { color: rgba(255,255,255,0.7); font-size: 0.875rem; font-weight: 500; text-decoration: none; transition: color 0.2s ease; position: relative; font-family: 'Plus Jakarta Sans', sans-serif; }
+    .nav-link::after { content: ''; position: absolute; bottom: -3px; left: 0; right: 0; height: 1px; background: #0079C1; transform: scaleX(0); transform-origin: left; transition: transform 0.2s ease; }
+    .nav-link:hover { color: #fff; }
+    .nav-link:hover::after { transform: scaleX(1); }
+    .nav-link:focus-visible { outline: 2px solid #1A9FE0; outline-offset: 4px; border-radius: 4px; }
+    /* Search */
+    .search-wrap { position: relative; max-width: 580px; margin: 0 auto; }
+    .search-input { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(0,121,193,0.3); border-radius: 16px; padding: 16px 20px 16px 52px; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1rem; color: #fff; outline: none; transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease; }
+    .search-input::placeholder { color: rgba(255,255,255,0.35); }
+    .search-input:focus { border-color: rgba(0,121,193,0.6); background: rgba(0,121,193,0.06); box-shadow: 0 0 0 4px rgba(0,121,193,0.12); }
+    .search-icon { position: absolute; left: 18px; top: 50%; transform: translateY(-50%); color: rgba(255,255,255,0.4); pointer-events: none; }
+    .search-clear { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.1); border: none; border-radius: 50%; width: 24px; height: 24px; display: none; align-items: center; justify-content: center; cursor: pointer; color: rgba(255,255,255,0.6); transition: background 0.15s ease; }
+    .search-clear:hover { background: rgba(255,255,255,0.18); color: #fff; }
+    .search-clear.visible { display: flex; }
+    /* Sidebar category buttons */
+    .cat-btn { display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 10px 14px; border-radius: 10px; border: none; background: transparent; color: rgba(255,255,255,0.6); font-family: 'Manrope', sans-serif; font-size: 0.875rem; font-weight: 600; cursor: pointer; transition: background 0.18s ease, color 0.18s ease; text-align: left; }
+    .cat-btn:hover { background: rgba(0,121,193,0.1); color: #fff; }
+    .cat-btn.active { background: rgba(0,121,193,0.15); color: #fff; border: 1px solid rgba(0,121,193,0.3); }
+    .cat-count { font-size: 0.72rem; font-weight: 700; background: rgba(0,121,193,0.18); color: #1A9FE0; border-radius: 100px; padding: 2px 8px; letter-spacing: 0.02em; }
+    .cat-btn.active .cat-count { background: rgba(0,121,193,0.3); }
+    /* Mobile category pills */
+    .pill-btn { padding: 8px 18px; border-radius: 100px; font-size: 0.8rem; font-weight: 600; font-family: 'Manrope', sans-serif; cursor: pointer; border: 1px solid rgba(0,121,193,0.2); background: rgba(0,121,193,0.06); color: rgba(255,255,255,0.65); transition: all 0.18s ease; white-space: nowrap; }
+    .pill-btn:hover { background: rgba(0,121,193,0.15); color: #fff; border-color: rgba(0,121,193,0.4); }
+    .pill-btn.active { background: #0079C1; color: #fff; border-color: #0079C1; box-shadow: 0 4px 14px rgba(0,121,193,0.35); }
+    /* FAQ accordion */
+    .faq-item { border-bottom: 1px solid rgba(0,121,193,0.1); transition: opacity 0.2s ease; }
+    .faq-item:last-child { border-bottom: none; }
+    .faq-item.hidden-item { display: none; }
+    .faq-btn { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 22px 24px; background: transparent; border: none; color: rgba(255,255,255,0.82); font-family: 'Manrope', sans-serif; font-size: 1rem; font-weight: 600; cursor: pointer; text-align: left; transition: color 0.2s ease, background 0.2s ease; border-radius: 8px; letter-spacing: -0.01em; }
+    .faq-btn:hover { color: #fff; background: rgba(0,121,193,0.05); }
+    .faq-item.open .faq-btn { color: #fff; background: rgba(0,121,193,0.07); }
+    .faq-btn:focus-visible { outline: 2px solid #1A9FE0; outline-offset: 2px; border-radius: 8px; }
+    .faq-icon { flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%; border: 1.5px solid rgba(0,121,193,0.3); display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.55); transition: transform 0.28s cubic-bezier(0.34,1.56,0.64,1), background 0.2s ease, border-color 0.2s ease, color 0.2s ease; }
+    .faq-btn:hover .faq-icon { color: #0079C1; border-color: rgba(0,121,193,0.5); background: rgba(0,121,193,0.08); }
+    .faq-item.open .faq-icon { background: rgba(0,121,193,0.18); border-color: #0079C1; color: #1A9FE0; transform: rotate(45deg); }
+    .faq-body { max-height: 0; overflow: hidden; transition: max-height 0.38s cubic-bezier(0.4,0,0.2,1); }
+    .faq-body-inner { padding: 4px 24px 24px; color: #C8D9E8; line-height: 1.8; font-size: 0.95rem; }
+    /* Category header badge */
+    .cat-header { display: flex; align-items: center; gap: 10px; padding: 20px 24px 8px; }
+    .cat-header-label { font-family: 'Manrope', sans-serif; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #1A9FE0; }
+    .cat-header-line { flex: 1; height: 1px; background: rgba(0,121,193,0.12); }
+    /* No results */
+    #no-results { display: none; text-align: center; padding: 60px 24px; color: rgba(255,255,255,0.45); font-family: 'Manrope', sans-serif; }
+    @media (max-width: 767px) {
+      body { overflow-x: hidden; }
+      nav { overflow: visible; }
+      .faq-btn { font-size: 0.9rem; padding: 18px 16px; }
+      .faq-body-inner { padding: 4px 16px 20px; font-size: 0.9rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="navbar" style="position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(5,11,24,0.85);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid rgba(0,121,193,0.18);">
+  <div style="max-width:1280px;margin:0 auto;padding:0 24px;height:72px;display:flex;align-items:center;justify-content:space-between;">
+    <a href="index.html" aria-label="DollarGPS home">
+      <svg width="150" height="40" viewBox="0 0 867 234" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M655.977 69C676.147 69.0002 694.657 80.3621 702.7 96.8301H678.956C673.466 91.0855 664.53 87.3829 655.977 87.3828C639.637 87.3828 626.36 100.66 626.36 117C626.36 133.34 639.637 146.617 655.977 146.617C670.02 146.617 681.636 136.915 684.828 123.894H653.296V109.085H706.019V113.937C706.019 141 687.764 165 655.977 165C628.275 165 605.934 143.553 605.934 117C605.934 90.4468 628.275 69 655.977 69ZM831.173 69C849.556 69 865.003 81.2552 865.004 97.4678H844.706C843.046 91.7232 837.429 87.3828 831.173 87.3828C823.514 87.3828 817.515 91.5955 817.514 96.957C817.514 103.468 829.897 106.915 842.024 109.085C854.535 111.383 866.663 119.808 866.663 134.361C866.663 151.978 852.876 165 831.173 165C811.386 165 796.45 149.936 796.45 132.574H816.365C817.258 140.489 823.003 146.617 831.173 146.617C840.62 146.617 846.876 142.149 846.876 134.361C846.875 126.702 838.705 124.787 825.173 121.596C810.237 118.149 797.726 110.872 797.726 97.7236C797.726 80.8726 810.748 69 831.173 69ZM760.685 71.043C777.664 71.043 791.579 84.702 791.579 101.681C791.579 118.659 777.664 132.319 760.685 132.319H735.409V162.957H714.983V71.043H760.685ZM735.409 113.937H759.665C765.282 113.936 771.154 108.446 771.154 101.681C771.154 94.915 765.282 89.4261 759.665 89.4258H735.409V113.937Z" fill="#ED1C24"/><path d="M368.836 91.979C389.9 91.9792 406.878 108.32 406.878 128.49C406.878 148.66 389.899 164.999 368.836 165C347.772 165 330.793 148.66 330.793 128.49C330.793 108.32 347.772 91.979 368.836 91.979ZM513.696 91.979C534.632 91.9791 551.611 108.32 551.611 128.49V162.958H533.738V154.404C529.398 160.787 521.994 164.999 513.696 165C492.76 165 475.781 148.66 475.781 128.49C475.781 108.32 492.76 91.979 513.696 91.979ZM277.021 71.0425C305.872 71.0426 325.659 90.4466 325.659 117C325.659 143.553 307.149 162.957 277.021 162.958H240V71.0425H277.021ZM434.931 162.958H415.781V71.0425H434.931V162.958ZM466.845 162.958H447.696V71.0425H466.845V162.958ZM601.421 109.34C590.825 109.34 582.272 117.894 582.272 128.49V162.958H563.123V128.49C563.123 108.32 577.677 91.979 598.868 91.979H601.421V109.34ZM368.836 109.34C358.368 109.34 349.941 117.894 349.941 128.49C349.942 139.085 358.368 147.638 368.836 147.638C379.304 147.638 387.729 139.085 387.729 128.49C387.729 117.894 379.304 109.341 368.836 109.34ZM514.079 109.34C503.483 109.34 494.931 117.894 494.931 128.49C494.931 139.085 503.484 147.638 514.079 147.638C524.675 147.638 533.228 139.085 533.229 128.49C533.229 117.894 524.675 109.34 514.079 109.34ZM260.426 144.575H277.787C292.979 144.575 305.361 132.191 305.361 117C305.361 101.808 292.978 89.4253 277.787 89.4253H260.426V144.575Z" fill="#0079C1"/><path d="M167.965 234V177.204C167.965 177.204 154.347 145.398 90.7921 145.398L167.965 234Z" fill="#0079C1"/><path d="M86.7348 121.14C81.3513 110.187 122.547 87.0775 154.86 91.4105C164.452 92.6968 168.455 98.7809 167.97 105.249V117.929L159.418 120.409V118.822C158.047 119.731 156.525 120.518 154.86 121.14C142.293 125.834 92.1188 132.093 86.7348 121.14Z" fill="#0079C1"/><path d="M167.966 85.7568C166.068 84.1703 163.654 83.0397 160.706 82.5664C128.203 77.3484 86.6725 99.5249 92.0879 112.715C97.5035 125.905 148.066 124.021 160.706 118.368C163.618 117.066 166.043 115.163 167.966 112.905V168.116C167.934 168.056 140.647 116.015 0 145.398L167.966 0V85.7568Z" fill="#ED1C24"/></svg>
+    </a>
+    <div style="display:flex;align-items:center;gap:32px;" class="hidden md:flex">
+      <a href="about.html" class="nav-link">About</a>
+      <a href="features.html" class="nav-link">Features</a>
+      <a href="insights.html" class="nav-link">Insights</a>
+      <a href="press.html" class="nav-link">Press</a>
+      <a href="contact.html" class="nav-link">Contact</a>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <a href="index.html#download" class="hidden md:inline-flex" style="align-items:center;gap:8px;background:#0079C1;color:#fff;font-family:'Manrope',sans-serif;font-weight:700;font-size:0.875rem;padding:12px 24px;border-radius:12px;text-decoration:none;box-shadow:0 4px 24px rgba(0,121,193,0.35);" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">Download App</a>
+      <button id="mob-toggle" class="md:hidden" onclick="document.getElementById('mob-menu').classList.toggle('hidden')" aria-label="Toggle navigation" style="background:none;border:1px solid rgba(0,121,193,0.3);border-radius:8px;padding:8px 10px;cursor:pointer;color:rgba(255,255,255,0.8);display:flex;align-items:center;justify-content:center;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="3" y1="7" x2="21" y2="7"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="17" x2="21" y2="17"/></svg>
+      </button>
+    </div>
+  </div>
+  <div id="mob-menu" class="hidden md:hidden" style="background:rgba(5,11,24,0.98);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid rgba(0,121,193,0.18);padding:20px 24px;">
+    <div style="display:flex;flex-direction:column;gap:4px;max-width:1280px;margin:0 auto;">
+      <a href="about.html" class="nav-link" style="padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.06);display:block;" onclick="document.getElementById('mob-menu').classList.add('hidden')">About</a>
+      <a href="features.html" class="nav-link" style="padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.06);display:block;" onclick="document.getElementById('mob-menu').classList.add('hidden')">Features</a>
+      <a href="insights.html" class="nav-link" style="padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.06);display:block;" onclick="document.getElementById('mob-menu').classList.add('hidden')">Insights</a>
+      <a href="press.html" class="nav-link" style="padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.06);display:block;" onclick="document.getElementById('mob-menu').classList.add('hidden')">Press</a>
+      <a href="contact.html" class="nav-link" style="padding:12px 0;display:block;" onclick="document.getElementById('mob-menu').classList.add('hidden')">Contact</a>
+      <a href="index.html#download" style="display:block;text-align:center;background:#0079C1;color:#fff;font-family:'Manrope',sans-serif;font-weight:700;font-size:0.9rem;padding:14px 24px;border-radius:12px;text-decoration:none;margin-top:12px;">Download App</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div style="padding-top:72px;position:relative;overflow:hidden;">
+  <div class="glow-blue" style="width:800px;height:800px;top:-200px;left:50%;transform:translateX(-50%);opacity:0.25;"></div>
+  <div style="position:relative;z-index:1;text-align:center;padding:80px 24px 64px;">
+    <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(0,121,193,0.1);border:1px solid rgba(0,121,193,0.25);border-radius:100px;padding:6px 16px;margin-bottom:24px;">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#1A9FE0" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      <span style="font-family:'Manrope',sans-serif;font-size:0.72rem;font-weight:700;color:#1A9FE0;letter-spacing:0.1em;text-transform:uppercase;">Help Centre</span>
+    </div>
+    <h1 style="font-family:'Manrope',sans-serif;font-size:clamp(2.4rem,5vw,4rem);font-weight:800;letter-spacing:-0.04em;line-height:1.08;margin-bottom:18px;">
+      Frequently Asked <span class="text-gradient-blue">Questions</span>
+    </h1>
+    <p style="color:#8BA4BE;font-size:1.05rem;max-width:520px;margin:0 auto 40px;line-height:1.75;font-family:'Plus Jakarta Sans',sans-serif;">
+      Everything you need to know about DollarGPS. Browse by category or search for a specific topic.
+    </p>
+    <!-- Search -->
+    <div class="search-wrap">
+      <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input id="faq-search" class="search-input" type="text" placeholder="Search questions…" autocomplete="off" />
+      <button id="search-clear" class="search-clear" aria-label="Clear search" onclick="clearSearch()">
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <!-- Stats row -->
+    <div style="display:flex;align-items:center;justify-content:center;gap:32px;margin-top:40px;flex-wrap:wrap;">
+      <div style="display:flex;align-items:center;gap:8px;color:#8BA4BE;font-size:0.82rem;font-family:'Plus Jakarta Sans',sans-serif;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1A9FE0" stroke-width="2" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+        12 questions answered
+      </div>
+      <div style="width:1px;height:14px;background:rgba(255,255,255,0.1);"></div>
+      <div style="display:flex;align-items:center;gap:8px;color:#8BA4BE;font-size:0.82rem;font-family:'Plus Jakarta Sans',sans-serif;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1A9FE0" stroke-width="2" stroke-linecap="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        Can't find yours? <a href="contact.html" style="color:#1A9FE0;text-decoration:none;margin-left:4px;">Contact us</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div style="max-width:1200px;margin:0 auto;padding:0 24px 100px;position:relative;z-index:1;">
+
+  <!-- Mobile category pills -->
+  <div class="md:hidden" style="display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin-bottom:32px;-webkit-overflow-scrolling:touch;scrollbar-width:none;">
+    <button class="pill-btn active" data-cat="all" onclick="filterFaq('all',this)">All <span style="opacity:0.65;margin-left:4px;">12</span></button>
+    <button class="pill-btn" data-cat="general" onclick="filterFaq('general',this)">General <span style="opacity:0.65;margin-left:4px;">3</span></button>
+    <button class="pill-btn" data-cat="how" onclick="filterFaq('how',this)">How It Works <span style="opacity:0.65;margin-left:4px;">5</span></button>
+    <button class="pill-btn" data-cat="security" onclick="filterFaq('security',this)">Security <span style="opacity:0.65;margin-left:4px;">2</span></button>
+    <button class="pill-btn" data-cat="pricing" onclick="filterFaq('pricing',this)">Pricing <span style="opacity:0.65;margin-left:4px;">2</span></button>
+  </div>
+
+  <div style="display:grid;grid-template-columns:240px 1fr;gap:40px;align-items:start;" class="hidden md:grid">
+
+    <!-- LEFT SIDEBAR -->
+    <div style="position:sticky;top:96px;">
+      <p style="font-family:'Manrope',sans-serif;font-size:0.7rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.35);margin-bottom:12px;padding:0 6px;">Browse by topic</p>
+      <div style="display:flex;flex-direction:column;gap:4px;">
+        <button class="cat-btn active" data-cat="all" onclick="filterFaq('all',this)">
+          <span>All Questions</span>
+          <span class="cat-count">12</span>
+        </button>
+        <button class="cat-btn" data-cat="general" onclick="filterFaq('general',this)">
+          <span>General</span>
+          <span class="cat-count">3</span>
+        </button>
+        <button class="cat-btn" data-cat="how" onclick="filterFaq('how',this)">
+          <span>How It Works</span>
+          <span class="cat-count">5</span>
+        </button>
+        <button class="cat-btn" data-cat="security" onclick="filterFaq('security',this)">
+          <span>Security</span>
+          <span class="cat-count">2</span>
+        </button>
+        <button class="cat-btn" data-cat="pricing" onclick="filterFaq('pricing',this)">
+          <span>Pricing</span>
+          <span class="cat-count">2</span>
+        </button>
+      </div>
+
+      <!-- Divider -->
+      <div style="height:1px;background:linear-gradient(90deg,rgba(0,121,193,0.2),transparent);margin:24px 0;"></div>
+
+      <!-- Contact card -->
+      <div style="background:rgba(0,121,193,0.07);border:1px solid rgba(0,121,193,0.2);border-radius:16px;padding:20px;">
+        <div style="width:36px;height:36px;border-radius:10px;background:rgba(0,121,193,0.15);display:flex;align-items:center;justify-content:center;margin-bottom:12px;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1A9FE0" stroke-width="2" stroke-linecap="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        </div>
+        <p style="font-family:'Manrope',sans-serif;font-size:0.875rem;font-weight:700;color:#fff;margin-bottom:6px;">Still have questions?</p>
+        <p style="font-size:0.8rem;color:#8BA4BE;line-height:1.6;margin-bottom:14px;font-family:'Plus Jakarta Sans',sans-serif;">Our team typically responds within one business day.</p>
+        <a href="contact.html" style="display:block;text-align:center;padding:10px 16px;background:#0079C1;color:#fff;border-radius:10px;font-family:'Manrope',sans-serif;font-weight:700;font-size:0.82rem;text-decoration:none;transition:background 0.2s ease;" onmouseover="this.style.background='#006BAA'" onmouseout="this.style.background='#0079C1'">Contact Us</a>
+      </div>
+
+      <!-- Back to home -->
+      <div style="margin-top:20px;padding:0 6px;">
+        <a href="index.html" style="display:flex;align-items:center;gap:6px;color:#8BA4BE;font-size:0.8rem;font-family:'Plus Jakarta Sans',sans-serif;text-decoration:none;transition:color 0.2s ease;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#8BA4BE'">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+          Back to homepage
+        </a>
+      </div>
+    </div>
+
+    <!-- RIGHT: FAQ accordion -->
+    <div id="faq-accordion" style="background:linear-gradient(135deg,rgba(10,18,36,0.95) 0%,rgba(15,26,50,0.95) 100%);border:1px solid rgba(0,121,193,0.2);border-radius:24px;overflow:hidden;box-shadow:0 32px 80px rgba(0,0,0,0.4),0 0 0 1px rgba(0,121,193,0.04);">
+      <div id="faq-inner" style="padding:8px 8px;">
+
+        <!-- General -->
+        <div class="cat-header" data-cat-header="general">
+          <span class="cat-header-label">General</span>
+          <div class="cat-header-line"></div>
+        </div>
+
+        <div class="faq-item" data-cat="general">
+          <button class="faq-btn" onclick="toggleFaq(this)">
+            <span>What exactly is DollarGPS?</span>
+            <div class="faq-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+          </button>
+          <div class="faq-body"><div class="faq-body-inner">DollarGPS is a personal wealth navigation app that acts like a GPS for your finances. Just as a GPS shows you the fastest route to a destination, DollarGPS shows you the most efficient path to build your maximum possible wealth — taking into account your income, debts, spending habits, savings, investments, and life goals. It provides a complete financial roadmap with month-by-month guidance.</div></div>
+        </div>
+
+        <div class="faq-item" data-cat="general">
+          <button class="faq-btn" onclick="toggleFaq(this)">
+            <span>How is DollarGPS different from other financial apps?</span>
+            <div class="faq-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+          </button>
+          <div class="faq-body"><div class="faq-body-inner">Most financial apps focus on tracking your spending or suggesting products to buy. DollarGPS is fundamentally different — it uses Nobel Prize-winning financial models to forecast your entire financial future and generate a personalised optimisation plan. We don't sell products, earn referral fees, or receive commissions of any kind. We exist solely to maximise your wealth using the same techniques used by the world's largest banks.</div></div>
+        </div>
+
+        <div class="faq-item" data-cat="general">
+          <button class="faq-btn" onclick="toggleFaq(this)">
+            <span>Can I set and track multiple financial goals simultaneously?</span>
+            <div class="faq-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+          </button>
+          <div class="faq-body"><div class="faq-body-inner">Yes. DollarGPS's Life Goals feature lets you set and track multiple goals simultaneously — retirement planning, buying a car, paying off your mortgage early, saving for a holiday, funding education, and more. The app intelligently models how all your goals interact with each other and with your wealth trajectory, showing you whether each goal is "On Track" and the projected surplus or shortfall for each one.</div></div>
+        </div>
+
+        <!-- How It Works -->
+        <div class="cat-header" data-cat-header="how">
+          <span class="cat-header-label">How It Works</span>
+          <div class="cat-header-line"></div>
+        </div>
+
+        <div class="faq-item" data-cat="how">
+          <button class="faq-btn" onclick="toggleFaq(this)">
+            <span>How does DollarGPS calculate my wealth improvement?</span>
+            <div class="faq-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+          </button>
+          <div class="faq-body"><div class="faq-body-inner">After you set up your financial profile (income, debts, savings, investments, goals), DollarGPS runs sophisticated financial engineering models to calculate your current wealth trajectory. It then generates a set of "Wealth Improvements" — strategies to optimise your cashflows, debt repayment sequencing, and allocation decisions — and shows you exactly how much additional wealth you can accumulate over your lifetime by following these improvements.</div></div>
+        </div>
+
+        <div class="faq-item" data-cat="how">
+          <button class="faq-btn" onclick="toggleFaq(this)">
+            <span>Do I need to switch banks or change my financial products?</span>
+            <div class="faq-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+          </button>
+          <div class="faq-body"><div class="faq-body-inner">No. DollarGPS is designed to optimise your wealth using your existing financial products. You don't need to switch banks, remortgage, or move any investments. The app works with what you already have, helping you make smarter decisions with your current financial structure. This is one of DollarGPS's core principles — we improve your situation without requiring you to make disruptive changes.</div></div>
+        </div>
+
+        <div class="faq-item" data-cat="how">
+          <button class="faq-btn" onclick="toggleFaq(this)">
+            <span>How long does it take to set up DollarGPS?</span>
+            <div class="faq-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+          </button>
+          <div class="faq-body"><div class="faq-body-inner">DollarGPS has a unique setup process that lets you experience the full power of the app in minutes — without needing to manually enter sensitive financial data. Once connected, the app immediately begins calculating your current wealth trajectory and generating personalised improvement strategies.</div></div>
+        </div>
+
+        <div class="faq-item" data-cat="how">
+          <button class="faq-btn" onclick="toggleFaq(this)">
+            <span>Who is DollarGPS designed for?</span>
+            <div class="faq-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+          </button>
+          <div class="faq-body"><div class="faq-body-inner">DollarGPS is designed for anyone who wants to take meaningful control of their financial future. Whether you're just starting out, paying off student loans, building equity in a home, planning for retirement, or managing a complex mix of assets and debts — DollarGPS provides personalised guidance for your specific situation. You don't need to be a finance expert; the app does the complex work and presents it in a clear, actionable format.</div></div>
+        </div>
+
+        <div class="faq-item" data-cat="how">
+          <button class="faq-btn" onclick="toggleFaq(this)">
+            <span>What makes the DollarGPS financial model so accurate?</span>
+            <div class="faq-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+          </button>
+          <div class="faq-body"><div class="faq-body-inner">The DollarGPS model is built on Nobel Prize-winning economic research and decades of applied financial engineering — the same techniques used by the world's top-tier investment banks for institutional clients. Unlike simple budgeting calculators, our model accounts for the complex interplay of all your financial elements: debt sequencing, cashflow optimisation, compound growth effects, inflation, life events, and goal interactions. The result is a level of financial insight previously unavailable to individual consumers.</div></div>
+        </div>
+
+        <!-- Security -->
+        <div class="cat-header" data-cat-header="security">
+          <span class="cat-header-label">Security</span>
+          <div class="cat-header-line"></div>
+        </div>
+
+        <div class="faq-item" data-cat="security">
+          <button class="faq-btn" onclick="toggleFaq(this)">
+            <span>Is my financial data safe with DollarGPS?</span>
+            <div class="faq-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+          </button>
+          <div class="faq-body"><div class="faq-body-inner">Absolutely. DollarGPS uses bank-grade 256-bit encryption for all data and connects to your accounts in read-only mode — meaning we can see your data to run calculations, but we can never move or access funds. We never sell your data to third parties and operate under strict financial data protection regulations. Your privacy and security is paramount.</div></div>
+        </div>
+
+        <div class="faq-item" data-cat="security">
+          <button class="faq-btn" onclick="toggleFaq(this)">
+            <span>Does DollarGPS have access to my bank accounts?</span>
+            <div class="faq-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+          </button>
+          <div class="faq-body"><div class="faq-body-inner">DollarGPS connects to your financial institutions using read-only access through regulated open banking protocols. This means we can read your transaction history and account balances to run your financial models, but we have absolutely no ability to move money, make payments, or execute any transactions on your behalf. Think of it as a view-only window into your finances.</div></div>
+        </div>
+
+        <!-- Pricing -->
+        <div class="cat-header" data-cat-header="pricing">
+          <span class="cat-header-label">Pricing</span>
+          <div class="cat-header-line"></div>
+        </div>
+
+        <div class="faq-item" data-cat="pricing">
+          <button class="faq-btn" onclick="toggleFaq(this)">
+            <span>Does DollarGPS charge commission or earn referral fees?</span>
+            <div class="faq-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+          </button>
+          <div class="faq-body"><div class="faq-body-inner">Never. DollarGPS does not charge commissions, accept referral fees, or earn revenue from selling or recommending financial products. We don't change anything on your long-term financial life — we simply provide financial intelligence. Our business model is subscription-based, ensuring our incentives are 100% aligned with your financial wellbeing.</div></div>
+        </div>
+
+        <div class="faq-item" data-cat="pricing">
+          <button class="faq-btn" onclick="toggleFaq(this)">
+            <span>How much does DollarGPS cost?</span>
+            <div class="faq-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+          </button>
+          <div class="faq-body"><div class="faq-body-inner">DollarGPS is available as a subscription. When you consider that the average user improves their long-term wealth by $837,000+, the cost of a monthly subscription is one of the highest-return investments you can make. You can download and explore the app for free to see your projected improvements before committing.</div></div>
+        </div>
+
+        <!-- No results message -->
+        <div id="no-results" style="display:none;text-align:center;padding:60px 24px;">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1.5" stroke-linecap="round" style="margin:0 auto 16px;display:block;"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <p style="font-family:'Manrope',sans-serif;font-weight:700;color:rgba(255,255,255,0.4);margin-bottom:8px;">No results found</p>
+          <p style="font-size:0.85rem;color:rgba(255,255,255,0.25);font-family:'Plus Jakarta Sans',sans-serif;">Try a different search term or <a href="contact.html" style="color:#1A9FE0;text-decoration:none;">contact us</a> directly.</p>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Mobile: FAQ accordion (shown below pills on small screens) -->
+  <div class="md:hidden" id="faq-mobile" style="background:linear-gradient(135deg,rgba(10,18,36,0.95) 0%,rgba(15,26,50,0.95) 100%);border:1px solid rgba(0,121,193,0.2);border-radius:20px;overflow:hidden;">
+    <div style="padding:4px 4px;" id="faq-mobile-inner">
+      <!-- Mirrors desktop content — same items, separate DOM for mobile simplicity -->
+
+      <div class="cat-header" data-cat-header="general"><span class="cat-header-label">General</span><div class="cat-header-line"></div></div>
+      <div class="faq-item" data-cat="general"><button class="faq-btn" onclick="toggleFaq(this)"><span>What exactly is DollarGPS?</span><div class="faq-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div></button><div class="faq-body"><div class="faq-body-inner">DollarGPS is a personal wealth navigation app that acts like a GPS for your finances. Just as a GPS shows you the fastest route to a destination, DollarGPS shows you the most efficient path to build your maximum possible wealth — taking into account your income, debts, spending habits, savings, investments, and life goals.</div></div></div>
+      <div class="faq-item" data-cat="general"><button class="faq-btn" onclick="toggleFaq(this)"><span>How is DollarGPS different from other financial apps?</span><div class="faq-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div></button><div class="faq-body"><div class="faq-body-inner">DollarGPS uses Nobel Prize-winning financial models to forecast your entire financial future. We don't sell products, earn referral fees, or receive commissions of any kind.</div></div></div>
+      <div class="faq-item" data-cat="general"><button class="faq-btn" onclick="toggleFaq(this)"><span>Can I track multiple financial goals simultaneously?</span><div class="faq-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div></button><div class="faq-body"><div class="faq-body-inner">Yes — retirement, property, vehicles, education and more. The app models how all goals interact with your wealth trajectory and shows "On Track" status for each.</div></div></div>
+
+      <div class="cat-header" data-cat-header="how"><span class="cat-header-label">How It Works</span><div class="cat-header-line"></div></div>
+      <div class="faq-item" data-cat="how"><button class="faq-btn" onclick="toggleFaq(this)"><span>How does DollarGPS calculate my wealth improvement?</span><div class="faq-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div></button><div class="faq-body"><div class="faq-body-inner">After setup, DollarGPS runs financial engineering models to calculate your wealth trajectory and generates specific Wealth Improvement strategies.</div></div></div>
+      <div class="faq-item" data-cat="how"><button class="faq-btn" onclick="toggleFaq(this)"><span>Do I need to switch banks or change financial products?</span><div class="faq-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div></button><div class="faq-body"><div class="faq-body-inner">No. DollarGPS works with your existing accounts and products. No switching banks, no remortgaging required.</div></div></div>
+      <div class="faq-item" data-cat="how"><button class="faq-btn" onclick="toggleFaq(this)"><span>How long does setup take?</span><div class="faq-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div></button><div class="faq-body"><div class="faq-body-inner">Minutes — without needing to manually enter sensitive data. The app begins calculating your trajectory immediately after connection.</div></div></div>
+      <div class="faq-item" data-cat="how"><button class="faq-btn" onclick="toggleFaq(this)"><span>Who is DollarGPS designed for?</span><div class="faq-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div></button><div class="faq-body"><div class="faq-body-inner">Anyone who wants to take meaningful control of their financial future — from early career through to retirement planning.</div></div></div>
+      <div class="faq-item" data-cat="how"><button class="faq-btn" onclick="toggleFaq(this)"><span>What makes the DollarGPS model so accurate?</span><div class="faq-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div></button><div class="faq-body"><div class="faq-body-inner">Built on Nobel Prize-winning economic research and decades of financial engineering — the same techniques used by top-tier investment banks.</div></div></div>
+
+      <div class="cat-header" data-cat-header="security"><span class="cat-header-label">Security</span><div class="cat-header-line"></div></div>
+      <div class="faq-item" data-cat="security"><button class="faq-btn" onclick="toggleFaq(this)"><span>Is my financial data safe?</span><div class="faq-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div></button><div class="faq-body"><div class="faq-body-inner">Yes. Bank-grade 256-bit encryption, read-only access, and we never sell your data to third parties.</div></div></div>
+      <div class="faq-item" data-cat="security"><button class="faq-btn" onclick="toggleFaq(this)"><span>Does DollarGPS have access to my bank accounts?</span><div class="faq-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div></button><div class="faq-body"><div class="faq-body-inner">Read-only access through regulated open banking. We can never move money, make payments, or execute any transactions.</div></div></div>
+
+      <div class="cat-header" data-cat-header="pricing"><span class="cat-header-label">Pricing</span><div class="cat-header-line"></div></div>
+      <div class="faq-item" data-cat="pricing"><button class="faq-btn" onclick="toggleFaq(this)"><span>Does DollarGPS charge commission or referral fees?</span><div class="faq-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div></button><div class="faq-body"><div class="faq-body-inner">Never. Subscription-based only — 100% aligned with your financial wellbeing.</div></div></div>
+      <div class="faq-item" data-cat="pricing"><button class="faq-btn" onclick="toggleFaq(this)"><span>How much does DollarGPS cost?</span><div class="faq-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div></button><div class="faq-body"><div class="faq-body-inner">Available as a subscription. Download and explore for free to see your projected improvements before committing.</div></div></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- CONTACT CTA -->
+<div style="border-top:1px solid rgba(0,121,193,0.1);padding:80px 24px;position:relative;overflow:hidden;">
+  <div class="glow-blue" style="width:600px;height:600px;top:50%;left:50%;transform:translate(-50%,-50%);opacity:0.18;pointer-events:none;"></div>
+  <div style="max-width:640px;margin:0 auto;text-align:center;position:relative;z-index:1;">
+    <div style="width:56px;height:56px;border-radius:16px;background:rgba(0,121,193,0.12);border:1px solid rgba(0,121,193,0.25);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1A9FE0" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    </div>
+    <h2 style="font-family:'Manrope',sans-serif;font-size:1.9rem;font-weight:800;letter-spacing:-0.03em;margin-bottom:14px;">Can't find your answer?</h2>
+    <p style="color:#8BA4BE;line-height:1.75;margin-bottom:32px;font-family:'Plus Jakarta Sans',sans-serif;">Our team is happy to help with any questions not covered here. We typically respond within one business day.</p>
+    <a href="contact.html" style="display:inline-flex;align-items:center;gap:10px;padding:14px 32px;border-radius:14px;background:#0079C1;color:#fff;font-family:'Manrope',sans-serif;font-weight:700;font-size:0.95rem;text-decoration:none;box-shadow:0 8px 32px rgba(0,121,193,0.35);transition:transform 0.2s cubic-bezier(0.34,1.56,0.64,1),box-shadow 0.2s ease;" onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='0 16px 48px rgba(0,121,193,0.45)'" onmouseout="this.style.transform='';this.style.boxShadow='0 8px 32px rgba(0,121,193,0.35)'">
+      Get in Touch
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
+    </a>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer style="border-top:1px solid rgba(0,121,193,0.12);padding:48px 0 32px;">
+  <div style="max-width:1280px;margin:0 auto;padding:0 24px;">
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:32px;margin-bottom:48px;" class="grid grid-cols-2 lg:grid-cols-4">
+      <div>
+        <a href="index.html"><svg width="130" height="35" viewBox="0 0 867 234" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M655.977 69C676.147 69.0002 694.657 80.3621 702.7 96.8301H678.956C673.466 91.0855 664.53 87.3829 655.977 87.3828C639.637 87.3828 626.36 100.66 626.36 117C626.36 133.34 639.637 146.617 655.977 146.617C670.02 146.617 681.636 136.915 684.828 123.894H653.296V109.085H706.019V113.937C706.019 141 687.764 165 655.977 165C628.275 165 605.934 143.553 605.934 117C605.934 90.4468 628.275 69 655.977 69ZM831.173 69C849.556 69 865.003 81.2552 865.004 97.4678H844.706C843.046 91.7232 837.429 87.3828 831.173 87.3828C823.514 87.3828 817.515 91.5955 817.514 96.957C817.514 103.468 829.897 106.915 842.024 109.085C854.535 111.383 866.663 119.808 866.663 134.361C866.663 151.978 852.876 165 831.173 165C811.386 165 796.45 149.936 796.45 132.574H816.365C817.258 140.489 823.003 146.617 831.173 146.617C840.62 146.617 846.876 142.149 846.876 134.361C846.875 126.702 838.705 124.787 825.173 121.596C810.237 118.149 797.726 110.872 797.726 97.7236C797.726 80.8726 810.748 69 831.173 69ZM760.685 71.043C777.664 71.043 791.579 84.702 791.579 101.681C791.579 118.659 777.664 132.319 760.685 132.319H735.409V162.957H714.983V71.043H760.685ZM735.409 113.937H759.665C765.282 113.936 771.154 108.446 771.154 101.681C771.154 94.915 765.282 89.4261 759.665 89.4258H735.409V113.937Z" fill="#ED1C24"/><path d="M368.836 91.979C389.9 91.9792 406.878 108.32 406.878 128.49C406.878 148.66 389.899 164.999 368.836 165C347.772 165 330.793 148.66 330.793 128.49C330.793 108.32 347.772 91.979 368.836 91.979ZM513.696 91.979C534.632 91.9791 551.611 108.32 551.611 128.49V162.958H533.738V154.404C529.398 160.787 521.994 164.999 513.696 165C492.76 165 475.781 148.66 475.781 128.49C475.781 108.32 492.76 91.979 513.696 91.979ZM277.021 71.0425C305.872 71.0426 325.659 90.4466 325.659 117C325.659 143.553 307.149 162.957 277.021 162.958H240V71.0425H277.021ZM434.931 162.958H415.781V71.0425H434.931V162.958ZM466.845 162.958H447.696V71.0425H466.845V162.958ZM601.421 109.34C590.825 109.34 582.272 117.894 582.272 128.49V162.958H563.123V128.49C563.123 108.32 577.677 91.979 598.868 91.979H601.421V109.34ZM368.836 109.34C358.368 109.34 349.941 117.894 349.941 128.49C349.942 139.085 358.368 147.638 368.836 147.638C379.304 147.638 387.729 139.085 387.729 128.49C387.729 117.894 379.304 109.341 368.836 109.34ZM514.079 109.34C503.483 109.34 494.931 117.894 494.931 128.49C494.931 139.085 503.484 147.638 514.079 147.638C524.675 147.638 533.228 139.085 533.229 128.49C533.229 117.894 524.675 109.34 514.079 109.34ZM260.426 144.575H277.787C292.979 144.575 305.361 132.191 305.361 117C305.361 101.808 292.978 89.4253 277.787 89.4253H260.426V144.575Z" fill="#0079C1"/><path d="M167.965 234V177.204C167.965 177.204 154.347 145.398 90.7921 145.398L167.965 234Z" fill="#0079C1"/><path d="M86.7348 121.14C81.3513 110.187 122.547 87.0775 154.86 91.4105C164.452 92.6968 168.455 98.7809 167.97 105.249V117.929L159.418 120.409V118.822C158.047 119.731 156.525 120.518 154.86 121.14C142.293 125.834 92.1188 132.093 86.7348 121.14Z" fill="#0079C1"/><path d="M167.966 85.7568C166.068 84.1703 163.654 83.0397 160.706 82.5664C128.203 77.3484 86.6725 99.5249 92.0879 112.715C97.5035 125.905 148.066 124.021 160.706 118.368C163.618 117.066 166.043 115.163 167.966 112.905V168.116C167.934 168.056 140.647 116.015 0 145.398L167.966 0V85.7568Z" fill="#ED1C24"/></svg></a>
+        <p style="color:#8BA4BE;font-size:0.85rem;line-height:1.7;margin-top:12px;max-width:180px;font-family:'Plus Jakarta Sans',sans-serif;">Improve your wealth with smarter decisions.</p>
+      </div>
+      <div>
+        <p style="color:#8898A8;font-size:0.7rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:16px;font-family:'Manrope',sans-serif;">Product</p>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <a href="features.html" style="color:#8BA4BE;font-size:0.875rem;text-decoration:none;font-family:'Plus Jakarta Sans',sans-serif;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#8BA4BE'">Features</a>
+          <a href="index.html#how-it-works" style="color:#8BA4BE;font-size:0.875rem;text-decoration:none;font-family:'Plus Jakarta Sans',sans-serif;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#8BA4BE'">How It Works</a>
+          <a href="faq.html" style="color:#8BA4BE;font-size:0.875rem;text-decoration:none;font-family:'Plus Jakarta Sans',sans-serif;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#8BA4BE'">FAQ</a>
+        </div>
+      </div>
+      <div>
+        <p style="color:#8898A8;font-size:0.7rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:16px;font-family:'Manrope',sans-serif;">Company</p>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <a href="about.html" style="color:#8BA4BE;font-size:0.875rem;text-decoration:none;font-family:'Plus Jakarta Sans',sans-serif;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#8BA4BE'">About</a>
+          <a href="team.html" style="color:#8BA4BE;font-size:0.875rem;text-decoration:none;font-family:'Plus Jakarta Sans',sans-serif;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#8BA4BE'">Team</a>
+          <a href="press.html" style="color:#8BA4BE;font-size:0.875rem;text-decoration:none;font-family:'Plus Jakarta Sans',sans-serif;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#8BA4BE'">Press</a>
+          <a href="contact.html" style="color:#8BA4BE;font-size:0.875rem;text-decoration:none;font-family:'Plus Jakarta Sans',sans-serif;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#8BA4BE'">Contact</a>
+        </div>
+      </div>
+      <div>
+        <p style="color:#8898A8;font-size:0.7rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:16px;font-family:'Manrope',sans-serif;">Legal</p>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <a href="#" style="color:#8BA4BE;font-size:0.875rem;text-decoration:none;font-family:'Plus Jakarta Sans',sans-serif;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#8BA4BE'">Privacy Policy</a>
+          <a href="#" style="color:#8BA4BE;font-size:0.875rem;text-decoration:none;font-family:'Plus Jakarta Sans',sans-serif;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#8BA4BE'">Terms of Service</a>
+          <a href="#" style="color:#8BA4BE;font-size:0.875rem;text-decoration:none;font-family:'Plus Jakarta Sans',sans-serif;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#8BA4BE'">Cookie Policy</a>
+        </div>
+      </div>
+    </div>
+    <div style="height:1px;background:linear-gradient(90deg,transparent,rgba(0,121,193,0.2),transparent);margin-bottom:24px;"></div>
+    <p style="color:#7B9BB9;font-size:0.75rem;text-align:center;font-family:'Plus Jakarta Sans',sans-serif;">© 2026 DollarGPS. All rights reserved. DollarGPS does not provide financial advice.</p>
+  </div>
+</footer>
+
+<script>
+  // ── FAQ accordion ──
+  function toggleFaq(btn) {
+    const item = btn.closest('.faq-item');
+    const body = item.querySelector('.faq-body');
+    const isOpen = item.classList.contains('open');
+    // Close all siblings
+    item.closest('[id]').querySelectorAll('.faq-item.open').forEach(el => {
+      el.classList.remove('open');
+      el.querySelector('.faq-body').style.maxHeight = '0';
+    });
+    if (!isOpen) {
+      item.classList.add('open');
+      body.style.maxHeight = body.scrollHeight + 'px';
+    }
+  }
+
+  // ── Category filter ──
+  function filterFaq(cat, clickedBtn) {
+    // Update all matching buttons (desktop + mobile)
+    document.querySelectorAll('.cat-btn, .pill-btn').forEach(b => {
+      b.classList.toggle('active', b.dataset.cat === cat);
+    });
+    // Clear search when switching category
+    const searchEl = document.getElementById('faq-search');
+    if (searchEl) { searchEl.value = ''; document.getElementById('search-clear').classList.remove('visible'); }
+
+    // Filter items in both accordions
+    ['faq-inner', 'faq-mobile-inner'].forEach(id => {
+      const container = document.getElementById(id);
+      if (!container) return;
+      container.querySelectorAll('.faq-item').forEach(item => {
+        const show = cat === 'all' || item.dataset.cat === cat;
+        item.style.display = show ? '' : 'none';
+        if (!show && item.classList.contains('open')) {
+          item.classList.remove('open');
+          item.querySelector('.faq-body').style.maxHeight = '0';
+        }
+      });
+      // Category headers
+      container.querySelectorAll('[data-cat-header]').forEach(header => {
+        header.style.display = (cat === 'all' || header.dataset.catHeader === cat) ? '' : 'none';
+      });
+      // No results check
+      const noResults = document.getElementById('no-results');
+      if (noResults) {
+        const anyVisible = container.querySelectorAll('.faq-item:not([style*="display: none"]):not([style*="display:none"])').length > 0;
+        noResults.style.display = anyVisible ? 'none' : 'block';
+      }
+    });
+  }
+
+  // ── Search ──
+  document.getElementById('faq-search').addEventListener('input', function () {
+    const q = this.value.trim().toLowerCase();
+    const clearBtn = document.getElementById('search-clear');
+    clearBtn.classList.toggle('visible', q.length > 0);
+
+    // Reset category buttons to All when searching
+    document.querySelectorAll('.cat-btn, .pill-btn').forEach(b => b.classList.toggle('active', b.dataset.cat === 'all'));
+
+    let anyVisible = false;
+    ['faq-inner', 'faq-mobile-inner'].forEach(id => {
+      const container = document.getElementById(id);
+      if (!container) return;
+      container.querySelectorAll('.faq-item').forEach(item => {
+        const text = item.querySelector('.faq-btn span').textContent.toLowerCase()
+                   + ' ' + item.querySelector('.faq-body-inner').textContent.toLowerCase();
+        const match = q === '' || text.includes(q);
+        item.style.display = match ? '' : 'none';
+        if (!match && item.classList.contains('open')) {
+          item.classList.remove('open');
+          item.querySelector('.faq-body').style.maxHeight = '0';
+        }
+        if (match) anyVisible = true;
+      });
+      container.querySelectorAll('[data-cat-header]').forEach(h => h.style.display = q === '' ? '' : 'none');
+    });
+
+    const noResults = document.getElementById('no-results');
+    if (noResults) noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+
+  function clearSearch() {
+    const el = document.getElementById('faq-search');
+    el.value = '';
+    el.dispatchEvent(new Event('input'));
+    el.focus();
+  }
+</script>
+</body>
+</html>

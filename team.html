@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Team — DollarGPS</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet" />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              blue: '#0079C1',
+              'blue-bright': '#1A9FE0',
+              red: '#ED1C24',
+              navy: '#050B18',
+              'navy-2': '#0C1629',
+              'navy-3': '#111E38',
+              'navy-4': '#1A2D4A',
+              'text-dim': '#8BA4BE',
+              'text-muted': '#7B9BB9',
+            }
+          },
+          fontFamily: {
+            display: ['Manrope', 'sans-serif'],
+            body: ['Plus Jakarta Sans', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      background-color: #050B18;
+      color: #ffffff;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0.025;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+      background-repeat: repeat;
+      background-size: 128px 128px;
+    }
+    .glow-blue {
+      position: absolute;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(0,121,193,0.22) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .glow-red {
+      position: absolute;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(237,28,36,0.14) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .text-gradient {
+      background: linear-gradient(135deg, #ffffff 0%, #8BA4BE 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .text-gradient-blue {
+      background: linear-gradient(135deg, #1A9FE0 0%, #0079C1 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .card-dark {
+      background: linear-gradient(135deg, rgba(12,22,41,0.9) 0%, rgba(17,30,56,0.7) 100%);
+      border: 1px solid rgba(0,121,193,0.15);
+      border-radius: 20px;
+      backdrop-filter: blur(12px);
+      transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .card-dark:hover {
+      border-color: rgba(0,121,193,0.35);
+      box-shadow: 0 12px 48px rgba(0,121,193,0.12);
+      transform: translateY(-4px);
+    }
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(0,121,193,0.2), transparent);
+    }
+    .section-label {
+      font-family: 'Manrope', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #8898A8;
+    }
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #0079C1;
+      color: #fff;
+      font-family: 'Manrope', sans-serif;
+      font-weight: 700;
+      font-size: 0.9rem;
+      padding: 14px 28px;
+      border-radius: 14px;
+      text-decoration: none;
+      box-shadow: 0 4px 24px rgba(0,121,193,0.35);
+      transition: transform 0.2s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.2s ease;
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 36px rgba(0,121,193,0.5);
+    }
+    .btn-primary:active { transform: translateY(0); }
+
+    .member-card {
+      background: linear-gradient(135deg, rgba(12,22,41,0.9) 0%, rgba(17,30,56,0.7) 100%);
+      border: 1px solid rgba(0,121,193,0.15);
+      border-radius: 24px;
+      overflow: hidden;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .member-card:hover {
+      border-color: rgba(0,121,193,0.35);
+      box-shadow: 0 16px 56px rgba(0,121,193,0.14);
+      transform: translateY(-6px);
+    }
+    .member-photo {
+      position: relative;
+      overflow: hidden;
+    }
+    .member-photo img {
+      width: 100%;
+      height: 260px;
+      object-fit: cover;
+      display: block;
+    }
+    .member-photo::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(5,11,24,0.85) 0%, transparent 50%);
+    }
+    .nobel-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: linear-gradient(135deg, rgba(237,28,36,0.15) 0%, rgba(237,28,36,0.08) 100%);
+      border: 1px solid rgba(237,28,36,0.3);
+      border-radius: 8px;
+      padding: 4px 10px;
+      font-family: 'Manrope', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: #ED1C24;
+      letter-spacing: 0.04em;
+    }
+    .advisor-card {
+      background: linear-gradient(135deg, rgba(12,22,41,0.8) 0%, rgba(17,30,56,0.6) 100%);
+      border: 1px solid rgba(0,121,193,0.12);
+      border-radius: 16px;
+      padding: 28px;
+      transition: border-color 0.3s ease, transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .advisor-card:hover {
+      border-color: rgba(0,121,193,0.3);
+      transform: translateY(-3px);
+    }
+    .culture-card {
+      background: linear-gradient(135deg, rgba(12,22,41,0.9) 0%, rgba(17,30,56,0.7) 100%);
+      border: 1px solid rgba(0,121,193,0.15);
+      border-radius: 20px;
+      padding: 36px 28px;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+    .culture-card:hover {
+      border-color: rgba(0,121,193,0.3);
+      box-shadow: 0 8px 36px rgba(0,121,193,0.1);
+    }
+    /* ── Nav link ── */
+    .nav-link { color: rgba(255,255,255,0.7); font-size: 0.875rem; font-weight: 500; text-decoration: none; transition: color 0.2s ease; position: relative; font-family: 'Plus Jakarta Sans', sans-serif; }
+    .nav-link::after { content: ''; position: absolute; bottom: -3px; left: 0; right: 0; height: 1px; background: #0079C1; transform: scaleX(0); transform-origin: left; transition: transform 0.2s ease; }
+    .nav-link:hover { color: #fff; }
+    .nav-link:hover::after { transform: scaleX(1); }
+    .nav-link:focus-visible { outline: 2px solid #1A9FE0; outline-offset: 4px; border-radius: 4px; }
+    .nav-link-active { color: #fff !important; font-weight: 600; }
+    .nav-link-active::after { transform: scaleX(1); }
+    @media (max-width: 767px) {
+      body { overflow-x: hidden; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="navbar" style="position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(5,11,24,0.85);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid rgba(0,121,193,0.18);">
+  <div style="max-width:1280px;margin:0 auto;padding:0 24px;height:72px;display:flex;align-items:center;justify-content:space-between;">
+    <a href="index.html" aria-label="DollarGPS home">
+      <svg width="150" height="40" viewBox="0 0 867 234" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M655.977 69C676.147 69.0002 694.657 80.3621 702.7 96.8301H678.956C673.466 91.0855 664.53 87.3829 655.977 87.3828C639.637 87.3828 626.36 100.66 626.36 117C626.36 133.34 639.637 146.617 655.977 146.617C670.02 146.617 681.636 136.915 684.828 123.894H653.296V109.085H706.019V113.937C706.019 141 687.764 165 655.977 165C628.275 165 605.934 143.553 605.934 117C605.934 90.4468 628.275 69 655.977 69ZM831.173 69C849.556 69 865.003 81.2552 865.004 97.4678H844.706C843.046 91.7232 837.429 87.3828 831.173 87.3828C823.514 87.3828 817.515 91.5955 817.514 96.957C817.514 103.468 829.897 106.915 842.024 109.085C854.535 111.383 866.663 119.808 866.663 134.361C866.663 151.978 852.876 165 831.173 165C811.386 165 796.45 149.936 796.45 132.574H816.365C817.258 140.489 823.003 146.617 831.173 146.617C840.62 146.617 846.876 142.149 846.876 134.361C846.875 126.702 838.705 124.787 825.173 121.596C810.237 118.149 797.726 110.872 797.726 97.7236C797.726 80.8726 810.748 69 831.173 69ZM760.685 71.043C777.664 71.043 791.579 84.702 791.579 101.681C791.579 118.659 777.664 132.319 760.685 132.319H735.409V162.957H714.983V71.043H760.685ZM735.409 113.937H759.665C765.282 113.936 771.154 108.446 771.154 101.681C771.154 94.915 765.282 89.4261 759.665 89.4258H735.409V113.937Z" fill="#ED1C24"/><path d="M368.836 91.979C389.9 91.9792 406.878 108.32 406.878 128.49C406.878 148.66 389.899 164.999 368.836 165C347.772 165 330.793 148.66 330.793 128.49C330.793 108.32 347.772 91.979 368.836 91.979ZM513.696 91.979C534.632 91.9791 551.611 108.32 551.611 128.49V162.958H533.738V154.404C529.398 160.787 521.994 164.999 513.696 165C492.76 165 475.781 148.66 475.781 128.49C475.781 108.32 492.76 91.979 513.696 91.979ZM277.021 71.0425C305.872 71.0426 325.659 90.4466 325.659 117C325.659 143.553 307.149 162.957 277.021 162.958H240V71.0425H277.021ZM434.931 162.958H415.781V71.0425H434.931V162.958ZM466.845 162.958H447.696V71.0425H466.845V162.958ZM601.421 109.34C590.825 109.34 582.272 117.894 582.272 128.49V162.958H563.123V128.49C563.123 108.32 577.677 91.979 598.868 91.979H601.421V109.34ZM368.836 109.34C358.368 109.34 349.941 117.894 349.941 128.49C349.942 139.085 358.368 147.638 368.836 147.638C379.304 147.638 387.729 139.085 387.729 128.49C387.729 117.894 379.304 109.341 368.836 109.34ZM514.079 109.34C503.483 109.34 494.931 117.894 494.931 128.49C494.931 139.085 503.484 147.638 514.079 147.638C524.675 147.638 533.228 139.085 533.229 128.49C533.229 117.894 524.675 109.34 514.079 109.34ZM260.426 144.575H277.787C292.979 144.575 305.361 132.191 305.361 117C305.361 101.808 292.978 89.4253 277.787 89.4253H260.426V144.575Z" fill="#0079C1"/><path d="M167.965 234V177.204C167.965 177.204 154.347 145.398 90.7921 145.398L167.965 234Z" fill="#0079C1"/><path d="M86.7348 121.14C81.3513 110.187 122.547 87.0775 154.86 91.4105C164.452 92.6968 168.455 98.7809 167.97 105.249V117.929L159.418 120.409V118.822C158.047 119.731 156.525 120.518 154.86 121.14C142.293 125.834 92.1188 132.093 86.7348 121.14Z" fill="#0079C1"/><path d="M167.966 85.7568C166.068 84.1703 163.654 83.0397 160.706 82.5664C128.203 77.3484 86.6725 99.5249 92.0879 112.715C97.5035 125.905 148.066 124.021 160.706 118.368C163.618 117.066 166.043 115.163 167.966 112.905V168.116C167.934 168.056 140.647 116.015 0 145.398L167.966 0V85.7568Z" fill="#ED1C24"/></svg>
+    </a>
+    <div style="display:flex;align-items:center;gap:32px;" class="hidden md:flex">
+      <a href="about.html" class="nav-link">About</a>
+      <a href="features.html" class="nav-link">Features</a>
+      <a href="insights.html" class="nav-link">Insights</a>
+      <a href="press.html" class="nav-link">Press</a>
+      <a href="contact.html" class="nav-link">Contact</a>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <a href="index.html#download" class="hidden md:inline-flex" style="align-items:center;gap:8px;background:#0079C1;color:#fff;font-family:'Manrope',sans-serif;font-weight:700;font-size:0.875rem;padding:12px 24px;border-radius:12px;text-decoration:none;box-shadow:0 4px 24px rgba(0,121,193,0.35);" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">Download App</a>
+      <button id="mob-toggle" class="md:hidden" onclick="document.getElementById('mob-menu').classList.toggle('hidden')" aria-label="Toggle navigation" style="background:none;border:1px solid rgba(0,121,193,0.3);border-radius:8px;padding:8px 10px;cursor:pointer;color:rgba(255,255,255,0.8);display:flex;align-items:center;justify-content:center;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="3" y1="7" x2="21" y2="7"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="17" x2="21" y2="17"/></svg>
+      </button>
+    </div>
+  </div>
+  <!-- Mobile menu -->
+  <div id="mob-menu" class="hidden md:hidden" style="background:rgba(5,11,24,0.98);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid rgba(0,121,193,0.18);padding:20px 24px;">
+    <div style="display:flex;flex-direction:column;gap:4px;max-width:1280px;margin:0 auto;">
+      <a href="about.html" class="nav-link" style="padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.06);display:block;" onclick="document.getElementById('mob-menu').classList.add('hidden')">About</a>
+      <a href="features.html" class="nav-link" style="padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.06);display:block;" onclick="document.getElementById('mob-menu').classList.add('hidden')">Features</a>
+      <a href="insights.html" class="nav-link" style="padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.06);display:block;" onclick="document.getElementById('mob-menu').classList.add('hidden')">Insights</a>
+      <a href="press.html" class="nav-link" style="padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.06);display:block;" onclick="document.getElementById('mob-menu').classList.add('hidden')">Press</a>
+      <a href="contact.html" class="nav-link" style="padding:12px 0;display:block;" onclick="document.getElementById('mob-menu').classList.add('hidden')">Contact</a>
+      <a href="index.html#download" style="display:block;text-align:center;background:#0079C1;color:#fff;font-family:'Manrope',sans-serif;font-weight:700;font-size:0.9rem;padding:14px 24px;border-radius:12px;text-decoration:none;margin-top:12px;">Download App</a>
+    </div>
+  </div>
+</nav>
+
+<main style="position:relative;z-index:1;">
+
+  <!-- HERO -->
+  <section style="position:relative;padding:160px 24px 100px;text-align:center;overflow:hidden;">
+    <div class="glow-blue" style="width:800px;height:600px;top:-200px;left:50%;transform:translateX(-50%);opacity:0.5;"></div>
+    <div class="glow-red" style="width:350px;height:350px;top:50px;right:-50px;opacity:0.35;"></div>
+    <div style="max-width:700px;margin:0 auto;position:relative;">
+      <div class="section-label" style="margin-bottom:20px;">The People</div>
+      <h1 style="font-family:'Manrope',sans-serif;font-size:clamp(2.2rem,5vw,3.8rem);font-weight:800;letter-spacing:-0.03em;line-height:1.1;margin-bottom:24px;">
+        <span class="text-gradient">The Minds Behind</span><br/>
+        <span class="text-gradient-blue">the Mission</span>
+      </h1>
+      <p style="font-size:1.125rem;color:#8BA4BE;line-height:1.7;">
+        World-class economists, engineers, and financial experts united by a single conviction: that everyone deserves access to the best financial intelligence the world has to offer.
+      </p>
+    </div>
+  </section>
+
+  <!-- LEADERSHIP GRID -->
+  <section style="padding:0 24px 100px;">
+    <div style="max-width:1200px;margin:0 auto;">
+      <div style="text-align:center;margin-bottom:56px;">
+        <div class="section-label" style="margin-bottom:12px;">Leadership</div>
+        <h2 style="font-family:'Manrope',sans-serif;font-size:clamp(1.6rem,2.5vw,2.2rem);font-weight:800;letter-spacing:-0.03em;" class="text-gradient">Founders &amp; Executives</h2>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px;" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+
+        <!-- Dr. James Hartley -->
+        <div class="member-card">
+          <div class="member-photo">
+            <img src="https://placehold.co/400x260/111E38/0079C1" alt="Dr. James Hartley" />
+          </div>
+          <div style="padding:28px;">
+            <div style="margin-bottom:8px;">
+              <p style="font-family:'Manrope',sans-serif;font-size:1.1rem;font-weight:800;color:#fff;letter-spacing:-0.02em;">Dr. James Hartley</p>
+              <p style="color:#1A9FE0;font-size:0.8rem;font-weight:600;font-family:'Manrope',sans-serif;letter-spacing:0.02em;margin-top:2px;">CEO &amp; Co-Founder</p>
+            </div>
+            <p style="color:#8BA4BE;font-size:0.85rem;line-height:1.7;">Former Partner at McKinsey Global Institute. PhD in Financial Economics from LSE. James spent 15 years studying why institutional financial models never reached consumers, and founded DollarGPS to close that gap.</p>
+            <div style="margin-top:16px;display:flex;gap:8px;flex-wrap:wrap;">
+              <span style="background:rgba(0,121,193,0.1);border:1px solid rgba(0,121,193,0.2);border-radius:6px;padding:3px 10px;font-size:0.7rem;font-family:'Manrope',sans-serif;color:#8BA4BE;">McKinsey</span>
+              <span style="background:rgba(0,121,193,0.1);border:1px solid rgba(0,121,193,0.2);border-radius:6px;padding:3px 10px;font-size:0.7rem;font-family:'Manrope',sans-serif;color:#8BA4BE;">LSE PhD</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dr. Sarah Chen -->
+        <div class="member-card">
+          <div class="member-photo">
+            <img src="https://placehold.co/400x260/111E38/0079C1" alt="Dr. Sarah Chen" />
+          </div>
+          <div style="padding:28px;">
+            <div style="margin-bottom:8px;">
+              <p style="font-family:'Manrope',sans-serif;font-size:1.1rem;font-weight:800;color:#fff;letter-spacing:-0.02em;">Dr. Sarah Chen</p>
+              <p style="color:#1A9FE0;font-size:0.8rem;font-weight:600;font-family:'Manrope',sans-serif;letter-spacing:0.02em;margin-top:2px;">CTO &amp; Co-Founder</p>
+            </div>
+            <p style="color:#8BA4BE;font-size:0.85rem;line-height:1.7;">Former Lead Engineer at Stripe. MS Computer Science from MIT. Sarah built the computational engine that runs millions of financial simulations in real time, enabling DollarGPS to deliver instant personalized insights at scale.</p>
+            <div style="margin-top:16px;display:flex;gap:8px;flex-wrap:wrap;">
+              <span style="background:rgba(0,121,193,0.1);border:1px solid rgba(0,121,193,0.2);border-radius:6px;padding:3px 10px;font-size:0.7rem;font-family:'Manrope',sans-serif;color:#8BA4BE;">Stripe</span>
+              <span style="background:rgba(0,121,193,0.1);border:1px solid rgba(0,121,193,0.2);border-radius:6px;padding:3px 10px;font-size:0.7rem;font-family:'Manrope',sans-serif;color:#8BA4BE;">MIT MS CS</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Prof. Robert Ashford -->
+        <div class="member-card">
+          <div class="member-photo">
+            <img src="https://placehold.co/400x260/111E38/0079C1" alt="Prof. Robert Ashford" />
+          </div>
+          <div style="padding:28px;">
+            <div style="margin-bottom:8px;">
+              <p style="font-family:'Manrope',sans-serif;font-size:1.1rem;font-weight:800;color:#fff;letter-spacing:-0.02em;">Prof. Robert Ashford</p>
+              <p style="color:#1A9FE0;font-size:0.8rem;font-weight:600;font-family:'Manrope',sans-serif;letter-spacing:0.02em;margin-top:2px;">Chief Economic Advisor</p>
+            </div>
+            <div class="nobel-badge" style="margin-bottom:12px;">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="#ED1C24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              Nobel Prize — Economic Sciences
+            </div>
+            <p style="color:#8BA4BE;font-size:0.85rem;line-height:1.7;">Professor Emeritus at Chicago Booth. His foundational work on intertemporal utility maximization forms the core of the DollarGPS model, translating decades of academic excellence into actionable personal finance tools.</p>
+            <div style="margin-top:16px;display:flex;gap:8px;flex-wrap:wrap;">
+              <span style="background:rgba(0,121,193,0.1);border:1px solid rgba(0,121,193,0.2);border-radius:6px;padding:3px 10px;font-size:0.7rem;font-family:'Manrope',sans-serif;color:#8BA4BE;">Chicago Booth</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Prof. Mei Lin Zhao -->
+        <div class="member-card">
+          <div class="member-photo">
+            <img src="https://placehold.co/400x260/111E38/0079C1" alt="Prof. Mei Lin Zhao" />
+          </div>
+          <div style="padding:28px;">
+            <div style="margin-bottom:8px;">
+              <p style="font-family:'Manrope',sans-serif;font-size:1.1rem;font-weight:800;color:#fff;letter-spacing:-0.02em;">Prof. Mei Lin Zhao</p>
+              <p style="color:#1A9FE0;font-size:0.8rem;font-weight:600;font-family:'Manrope',sans-serif;letter-spacing:0.02em;margin-top:2px;">Senior Academic Advisor</p>
+            </div>
+            <div class="nobel-badge" style="margin-bottom:12px;">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="#ED1C24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              Nobel Prize — Economic Sciences
+            </div>
+            <p style="color:#8BA4BE;font-size:0.85rem;line-height:1.7;">Professor at Harvard Economics. Pioneered research on household financial decision-making under uncertainty. Her work directly informs how DollarGPS accounts for behavioral factors and life uncertainty in its models.</p>
+            <div style="margin-top:16px;display:flex;gap:8px;flex-wrap:wrap;">
+              <span style="background:rgba(0,121,193,0.1);border:1px solid rgba(0,121,193,0.2);border-radius:6px;padding:3px 10px;font-size:0.7rem;font-family:'Manrope',sans-serif;color:#8BA4BE;">Harvard Economics</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Michael O'Brien -->
+        <div class="member-card">
+          <div class="member-photo">
+            <img src="https://placehold.co/400x260/111E38/0079C1" alt="Michael O'Brien" />
+          </div>
+          <div style="padding:28px;">
+            <div style="margin-bottom:8px;">
+              <p style="font-family:'Manrope',sans-serif;font-size:1.1rem;font-weight:800;color:#fff;letter-spacing:-0.02em;">Michael O'Brien</p>
+              <p style="color:#1A9FE0;font-size:0.8rem;font-weight:600;font-family:'Manrope',sans-serif;letter-spacing:0.02em;margin-top:2px;">Chief Financial Officer</p>
+            </div>
+            <p style="color:#8BA4BE;font-size:0.85rem;line-height:1.7;">20 years at JPMorgan and Goldman Sachs. Former Head of Consumer Wealth at a top-5 global bank. Michael brings deep institutional expertise in wealth management, compliance, and global financial markets to DollarGPS.</p>
+            <div style="margin-top:16px;display:flex;gap:8px;flex-wrap:wrap;">
+              <span style="background:rgba(0,121,193,0.1);border:1px solid rgba(0,121,193,0.2);border-radius:6px;padding:3px 10px;font-size:0.7rem;font-family:'Manrope',sans-serif;color:#8BA4BE;">JPMorgan</span>
+              <span style="background:rgba(0,121,193,0.1);border:1px solid rgba(0,121,193,0.2);border-radius:6px;padding:3px 10px;font-size:0.7rem;font-family:'Manrope',sans-serif;color:#8BA4BE;">Goldman Sachs</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Anika Patel -->
+        <div class="member-card">
+          <div class="member-photo">
+            <img src="https://placehold.co/400x260/111E38/0079C1" alt="Anika Patel" />
+          </div>
+          <div style="padding:28px;">
+            <div style="margin-bottom:8px;">
+              <p style="font-family:'Manrope',sans-serif;font-size:1.1rem;font-weight:800;color:#fff;letter-spacing:-0.02em;">Anika Patel</p>
+              <p style="color:#1A9FE0;font-size:0.8rem;font-weight:600;font-family:'Manrope',sans-serif;letter-spacing:0.02em;margin-top:2px;">Chief Product Officer</p>
+            </div>
+            <p style="color:#8BA4BE;font-size:0.85rem;line-height:1.7;">Former VP Product at Monzo and Revolut. Built products used by over 8 million people. Anika ensures that DollarGPS's sophisticated economic models translate into an experience that is clear, intuitive, and genuinely delightful to use.</p>
+            <div style="margin-top:16px;display:flex;gap:8px;flex-wrap:wrap;">
+              <span style="background:rgba(0,121,193,0.1);border:1px solid rgba(0,121,193,0.2);border-radius:6px;padding:3px 10px;font-size:0.7rem;font-family:'Manrope',sans-serif;color:#8BA4BE;">Monzo</span>
+              <span style="background:rgba(0,121,193,0.1);border:1px solid rgba(0,121,193,0.2);border-radius:6px;padding:3px 10px;font-size:0.7rem;font-family:'Manrope',sans-serif;color:#8BA4BE;">Revolut</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ADVISORY BOARD -->
+  <section style="padding:0 24px 100px;">
+    <div style="max-width:1100px;margin:0 auto;">
+      <div style="text-align:center;margin-bottom:56px;">
+        <div class="section-label" style="margin-bottom:12px;">Advisory</div>
+        <h2 style="font-family:'Manrope',sans-serif;font-size:clamp(1.6rem,2.5vw,2.2rem);font-weight:800;letter-spacing:-0.03em;" class="text-gradient">Advisory Board</h2>
+        <p style="color:#8BA4BE;font-size:1rem;line-height:1.7;max-width:520px;margin:16px auto 0;">Seasoned leaders from finance, academia, and technology who guide DollarGPS's strategic direction.</p>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:20px;" class="grid grid-cols-1 md:grid-cols-2">
+
+        <div class="advisor-card">
+          <div style="display:flex;align-items:center;gap:16px;margin-bottom:14px;">
+            <div style="width:48px;height:48px;border-radius:12px;background:rgba(0,121,193,0.12);border:1px solid rgba(0,121,193,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'Manrope',sans-serif;font-weight:800;font-size:1.1rem;color:#0079C1;">DL</div>
+            <div>
+              <p style="font-family:'Manrope',sans-serif;font-weight:700;font-size:0.95rem;color:#fff;">Dr. Diana Loeb</p>
+              <p style="color:#1A9FE0;font-size:0.75rem;font-weight:600;font-family:'Manrope',sans-serif;">Former Chief Economist, World Bank</p>
+            </div>
+          </div>
+          <p style="color:#8BA4BE;font-size:0.85rem;line-height:1.6;">Brings 30 years of macroeconomic expertise and deep experience in global financial policy, shaping DollarGPS's approach to economic scenario modelling.</p>
+        </div>
+
+        <div class="advisor-card">
+          <div style="display:flex;align-items:center;gap:16px;margin-bottom:14px;">
+            <div style="width:48px;height:48px;border-radius:12px;background:rgba(0,121,193,0.12);border:1px solid rgba(0,121,193,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'Manrope',sans-serif;font-weight:800;font-size:1.1rem;color:#0079C1;">TK</div>
+            <div>
+              <p style="font-family:'Manrope',sans-serif;font-weight:700;font-size:0.95rem;color:#fff;">Thomas Kang</p>
+              <p style="color:#1A9FE0;font-size:0.75rem;font-weight:600;font-family:'Manrope',sans-serif;">Partner, Sequoia Capital</p>
+            </div>
+          </div>
+          <p style="color:#8BA4BE;font-size:0.85rem;line-height:1.6;">Led early-stage investments in 14 fintech unicorns. Advises on product-market fit, go-to-market strategy, and scaling consumer financial products globally.</p>
+        </div>
+
+        <div class="advisor-card">
+          <div style="display:flex;align-items:center;gap:16px;margin-bottom:14px;">
+            <div style="width:48px;height:48px;border-radius:12px;background:rgba(0,121,193,0.12);border:1px solid rgba(0,121,193,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'Manrope',sans-serif;font-weight:800;font-size:1.1rem;color:#0079C1;">SR</div>
+            <div>
+              <p style="font-family:'Manrope',sans-serif;font-weight:700;font-size:0.95rem;color:#fff;">Dr. Sandra Reyes</p>
+              <p style="color:#1A9FE0;font-size:0.75rem;font-weight:600;font-family:'Manrope',sans-serif;">Professor, Stanford Graduate School of Business</p>
+            </div>
+          </div>
+          <p style="color:#8BA4BE;font-size:0.85rem;line-height:1.6;">Renowned researcher in behavioural economics and consumer decision-making. Helps ensure DollarGPS's interface designs account for how people actually make financial decisions.</p>
+        </div>
+
+        <div class="advisor-card">
+          <div style="display:flex;align-items:center;gap:16px;margin-bottom:14px;">
+            <div style="width:48px;height:48px;border-radius:12px;background:rgba(0,121,193,0.12);border:1px solid rgba(0,121,193,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'Manrope',sans-serif;font-weight:800;font-size:1.1rem;color:#0079C1;">MW</div>
+            <div>
+              <p style="font-family:'Manrope',sans-serif;font-weight:700;font-size:0.95rem;color:#fff;">Marcus Webb</p>
+              <p style="color:#1A9FE0;font-size:0.75rem;font-weight:600;font-family:'Manrope',sans-serif;">Former CTO, Plaid &amp; Robinhood</p>
+            </div>
+          </div>
+          <p style="color:#8BA4BE;font-size:0.85rem;line-height:1.6;">Pioneer in secure financial data infrastructure. Provides technical oversight on DollarGPS's bank connectivity architecture, data security, and API strategy.</p>
+        </div>
+
+        <div class="advisor-card" style="grid-column: span 2;" class="md:col-span-1">
+          <div style="display:flex;align-items:center;gap:16px;margin-bottom:14px;">
+            <div style="width:48px;height:48px;border-radius:12px;background:rgba(0,121,193,0.12);border:1px solid rgba(0,121,193,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'Manrope',sans-serif;font-weight:800;font-size:1.1rem;color:#0079C1;">HN</div>
+            <div>
+              <p style="font-family:'Manrope',sans-serif;font-weight:700;font-size:0.95rem;color:#fff;">Dr. Helen Nakamura</p>
+              <p style="color:#1A9FE0;font-size:0.75rem;font-weight:600;font-family:'Manrope',sans-serif;">Director, MIT Media Lab — Financial Technology Group</p>
+            </div>
+          </div>
+          <p style="color:#8BA4BE;font-size:0.85rem;line-height:1.6;">Leads cutting-edge research at the intersection of AI and personal finance. Guides DollarGPS's machine learning roadmap and the next generation of predictive financial modelling.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- DIVIDER -->
+  <div style="max-width:1100px;margin:0 auto 80px;padding:0 24px;"><div class="divider"></div></div>
+
+  <!-- CULTURE -->
+  <section style="padding:0 24px 120px;">
+    <div style="max-width:1100px;margin:0 auto;">
+      <div style="text-align:center;margin-bottom:56px;">
+        <div class="section-label" style="margin-bottom:12px;">How We Work</div>
+        <h2 style="font-family:'Manrope',sans-serif;font-size:clamp(1.6rem,2.5vw,2.2rem);font-weight:800;letter-spacing:-0.03em;" class="text-gradient">Our Culture</h2>
+        <p style="color:#8BA4BE;font-size:1rem;line-height:1.7;max-width:520px;margin:16px auto 0;">Three principles that define how we operate, build, and grow every single day.</p>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px;" class="grid grid-cols-1 md:grid-cols-3">
+
+        <div class="culture-card">
+          <div style="width:52px;height:52px;border-radius:14px;background:rgba(0,121,193,0.12);border:1px solid rgba(0,121,193,0.2);display:flex;align-items:center;justify-content:center;margin-bottom:24px;">
+            <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="#0079C1" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+          </div>
+          <h3 style="font-family:'Manrope',sans-serif;font-size:1.1rem;font-weight:800;color:#fff;margin-bottom:12px;letter-spacing:-0.02em;">Truth Over Comfort</h3>
+          <p style="color:#8BA4BE;font-size:0.875rem;line-height:1.7;">We tell users what they need to hear, not what they want to hear. Honest financial guidance, even when it's difficult, produces better long-term outcomes. We hold that same standard internally — honest feedback, data-driven decisions, no sacred cows.</p>
+        </div>
+
+        <div class="culture-card" style="border-color:rgba(0,121,193,0.25);">
+          <div style="width:52px;height:52px;border-radius:14px;background:rgba(0,121,193,0.12);border:1px solid rgba(0,121,193,0.2);display:flex;align-items:center;justify-content:center;margin-bottom:24px;">
+            <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="#0079C1" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          </div>
+          <h3 style="font-family:'Manrope',sans-serif;font-size:1.1rem;font-weight:800;color:#fff;margin-bottom:12px;letter-spacing:-0.02em;">Mission-First Hiring</h3>
+          <p style="color:#8BA4BE;font-size:0.875rem;line-height:1.7;">Every hire at DollarGPS shares a genuine belief that financial inequality is a problem worth solving. We're a small team by design — every person has outsized responsibility and outsized impact. We grow deliberately, not for growth's sake.</p>
+        </div>
+
+        <div class="culture-card">
+          <div style="width:52px;height:52px;border-radius:14px;background:rgba(237,28,36,0.1);border:1px solid rgba(237,28,36,0.18);display:flex;align-items:center;justify-content:center;margin-bottom:24px;">
+            <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="#ED1C24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+          </div>
+          <h3 style="font-family:'Manrope',sans-serif;font-size:1.1rem;font-weight:800;color:#fff;margin-bottom:12px;letter-spacing:-0.02em;">Measure Everything</h3>
+          <p style="color:#8BA4BE;font-size:0.875rem;line-height:1.7;">We track one metric above all others: did our users' wealth improve? This keeps our product teams anchored to real-world outcomes and prevents the trap of optimising for engagement or vanity metrics that don't correlate with genuine user benefit.</p>
+        </div>
+
+      </div>
+
+      <div style="text-align:center;margin-top:56px;">
+        <p style="color:#8BA4BE;font-size:1rem;margin-bottom:24px;">Interested in joining the team?</p>
+        <a href="contact.html" class="btn-primary">Get in Touch &rarr;</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- FOOTER -->
+<footer style="border-top:1px solid rgba(0,121,193,0.12);padding:48px 0 32px;">
+  <div style="max-width:1280px;margin:0 auto;padding:0 24px;">
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:32px;margin-bottom:48px;" class="grid grid-cols-2 lg:grid-cols-4">
+      <div>
+        <a href="index.html"><svg width="130" height="35" viewBox="0 0 867 234" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M655.977 69C676.147 69.0002 694.657 80.3621 702.7 96.8301H678.956C673.466 91.0855 664.53 87.3829 655.977 87.3828C639.637 87.3828 626.36 100.66 626.36 117C626.36 133.34 639.637 146.617 655.977 146.617C670.02 146.617 681.636 136.915 684.828 123.894H653.296V109.085H706.019V113.937C706.019 141 687.764 165 655.977 165C628.275 165 605.934 143.553 605.934 117C605.934 90.4468 628.275 69 655.977 69ZM831.173 69C849.556 69 865.003 81.2552 865.004 97.4678H844.706C843.046 91.7232 837.429 87.3828 831.173 87.3828C823.514 87.3828 817.515 91.5955 817.514 96.957C817.514 103.468 829.897 106.915 842.024 109.085C854.535 111.383 866.663 119.808 866.663 134.361C866.663 151.978 852.876 165 831.173 165C811.386 165 796.45 149.936 796.45 132.574H816.365C817.258 140.489 823.003 146.617 831.173 146.617C840.62 146.617 846.876 142.149 846.876 134.361C846.875 126.702 838.705 124.787 825.173 121.596C810.237 118.149 797.726 110.872 797.726 97.7236C797.726 80.8726 810.748 69 831.173 69ZM760.685 71.043C777.664 71.043 791.579 84.702 791.579 101.681C791.579 118.659 777.664 132.319 760.685 132.319H735.409V162.957H714.983V71.043H760.685ZM735.409 113.937H759.665C765.282 113.936 771.154 108.446 771.154 101.681C771.154 94.915 765.282 89.4261 759.665 89.4258H735.409V113.937Z" fill="#ED1C24"/><path d="M368.836 91.979C389.9 91.9792 406.878 108.32 406.878 128.49C406.878 148.66 389.899 164.999 368.836 165C347.772 165 330.793 148.66 330.793 128.49C330.793 108.32 347.772 91.979 368.836 91.979ZM513.696 91.979C534.632 91.9791 551.611 108.32 551.611 128.49V162.958H533.738V154.404C529.398 160.787 521.994 164.999 513.696 165C492.76 165 475.781 148.66 475.781 128.49C475.781 108.32 492.76 91.979 513.696 91.979ZM277.021 71.0425C305.872 71.0426 325.659 90.4466 325.659 117C325.659 143.553 307.149 162.957 277.021 162.958H240V71.0425H277.021ZM434.931 162.958H415.781V71.0425H434.931V162.958ZM466.845 162.958H447.696V71.0425H466.845V162.958ZM601.421 109.34C590.825 109.34 582.272 117.894 582.272 128.49V162.958H563.123V128.49C563.123 108.32 577.677 91.979 598.868 91.979H601.421V109.34ZM368.836 109.34C358.368 109.34 349.941 117.894 349.941 128.49C349.942 139.085 358.368 147.638 368.836 147.638C379.304 147.638 387.729 139.085 387.729 128.49C387.729 117.894 379.304 109.341 368.836 109.34ZM514.079 109.34C503.483 109.34 494.931 117.894 494.931 128.49C494.931 139.085 503.484 147.638 514.079 147.638C524.675 147.638 533.228 139.085 533.229 128.49C533.229 117.894 524.675 109.34 514.079 109.34ZM260.426 144.575H277.787C292.979 144.575 305.361 132.191 305.361 117C305.361 101.808 292.978 89.4253 277.787 89.4253H260.426V144.575Z" fill="#0079C1"/><path d="M167.965 234V177.204C167.965 177.204 154.347 145.398 90.7921 145.398L167.965 234Z" fill="#0079C1"/><path d="M86.7348 121.14C81.3513 110.187 122.547 87.0775 154.86 91.4105C164.452 92.6968 168.455 98.7809 167.97 105.249V117.929L159.418 120.409V118.822C158.047 119.731 156.525 120.518 154.86 121.14C142.293 125.834 92.1188 132.093 86.7348 121.14Z" fill="#0079C1"/><path d="M167.966 85.7568C166.068 84.1703 163.654 83.0397 160.706 82.5664C128.203 77.3484 86.6725 99.5249 92.0879 112.715C97.5035 125.905 148.066 124.021 160.706 118.368C163.618 117.066 166.043 115.163 167.966 112.905V168.116C167.934 168.056 140.647 116.015 0 145.398L167.966 0V85.7568Z" fill="#ED1C24"/></svg></a>
+        <p style="color:#8BA4BE;font-size:0.85rem;line-height:1.7;margin-top:12px;max-width:180px;font-family:'Plus Jakarta Sans',sans-serif;">Improve your wealth with smarter decisions.</p>
+      </div>
+      <div>
+        <p style="color:#8898A8;font-size:0.7rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:16px;font-family:'Manrope',sans-serif;">Product</p>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <a href="features.html" style="color:#8BA4BE;font-size:0.875rem;text-decoration:none;font-family:'Plus Jakarta Sans',sans-serif;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#8BA4BE'">Features</a>
+          <a href="index.html#how-it-works" style="color:#8BA4BE;font-size:0.875rem;text-decoration:none;font-family:'Plus Jakarta Sans',sans-serif;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#8BA4BE'">How It Works</a>
+          <a href="faq.html" style="color:#8BA4BE;font-size:0.875rem;text-decoration:none;font-family:'Plus Jakarta Sans',sans-serif;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#8BA4BE'">FAQ</a>
+        </div>
+      </div>
+      <div>
+        <p style="color:#8898A8;font-size:0.7rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:16px;font-family:'Manrope',sans-serif;">Company</p>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <a href="about.html" style="color:#8BA4BE;font-size:0.875rem;text-decoration:none;font-family:'Plus Jakarta Sans',sans-serif;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#8BA4BE'">About</a>
+          <a href="team.html" style="color:#8BA4BE;font-size:0.875rem;text-decoration:none;font-family:'Plus Jakarta Sans',sans-serif;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#8BA4BE'">Team</a>
+          <a href="press.html" style="color:#8BA4BE;font-size:0.875rem;text-decoration:none;font-family:'Plus Jakarta Sans',sans-serif;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#8BA4BE'">Press</a>
+          <a href="contact.html" style="color:#8BA4BE;font-size:0.875rem;text-decoration:none;font-family:'Plus Jakarta Sans',sans-serif;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#8BA4BE'">Contact</a>
+        </div>
+      </div>
+      <div>
+        <p style="color:#8898A8;font-size:0.7rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:16px;font-family:'Manrope',sans-serif;">Legal</p>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <a href="#" style="color:#8BA4BE;font-size:0.875rem;text-decoration:none;font-family:'Plus Jakarta Sans',sans-serif;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#8BA4BE'">Privacy Policy</a>
+          <a href="#" style="color:#8BA4BE;font-size:0.875rem;text-decoration:none;font-family:'Plus Jakarta Sans',sans-serif;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#8BA4BE'">Terms of Service</a>
+          <a href="#" style="color:#8BA4BE;font-size:0.875rem;text-decoration:none;font-family:'Plus Jakarta Sans',sans-serif;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#8BA4BE'">Cookie Policy</a>
+        </div>
+      </div>
+    </div>
+    <div style="height:1px;background:linear-gradient(90deg,transparent,rgba(0,121,193,0.2),transparent);margin-bottom:24px;"></div>
+    <p style="color:#7B9BB9;font-size:0.75rem;text-align:center;font-family:'Plus Jakarta Sans',sans-serif;">© 2026 DollarGPS. All rights reserved. DollarGPS does not provide financial advice.</p>
+  </div>
+</footer>
+
+</body>
+</html>
